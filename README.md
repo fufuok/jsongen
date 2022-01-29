@@ -1,3 +1,55 @@
+# 高效的 JSON 字符串生成器
+
+***forked from darjun/json-gen***
+
+使用原始数据项生成 JSON, 类似字符拼接, 支持常用类型.
+
+性能比结构体序列化方式快挺多.
+
+## 改动
+
+- 增加使用 `buffer_pool`
+- 减少一些不必要的转换
+- 增加 `go mod`
+
+## 使用
+
+简单使用请向下翻原文, 高性能场景建议配合 [bytespool](https://github.com/fufuok/bytespool) 使用:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/fufuok/bytespool"
+	"github.com/fufuok/jsongen"
+)
+
+func main() {
+	js := jsongen.NewMap()
+	js.PutString("s", `a"b"\c`)
+	js.PutFloat("f", 3.14)
+	js.PutBool("b", false)
+	jsArr := jsongen.NewArray()
+	jsArr.AppendInt(7)
+	jsArr.AppendStringArray([]string{"A", "B"})
+	js.PutArray("sub", jsArr)
+
+	size := js.Size()
+	bs := bytespool.Get(size)
+	defer bytespool.Put(bs)
+	data := js.Serialize(bs)
+
+	// 也可以直接使用 nil
+	// data := js.Serialize(nil)
+
+	fmt.Printf("%s\n", data) // {"s":"a\"b\"\\c","f":3.14,"b":false,"sub":[7,["A","B"]]}
+}
+```
+
+
+
 # json-gen
 
 [![Build Status](https://travis-ci.org/darjun/json-gen.svg?branch=master)](https://travis-ci.org/darjun/json-gen)
