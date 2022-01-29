@@ -74,6 +74,7 @@ func BenchmarkStandardJson(b *testing.B) {
 	}
 	m["map3"] = m3
 
+	b.ReportAllocs()
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
@@ -84,6 +85,7 @@ func BenchmarkStandardJson(b *testing.B) {
 func BenchmarkGen(b *testing.B) {
 	b.StopTimer()
 	m, _ := map4()
+	b.ReportAllocs()
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {

@@ -1,8 +1,9 @@
 package jsongen
 
 import (
-	"bytes"
 	"strconv"
+
+	"github.com/fufuok/jsongen/internal"
 )
 
 // Value 表示将要序列化到`json`字符串中的值
@@ -19,7 +20,7 @@ type QuotedValue string
 // Serialize 将`q`序列化为字符串，追加到`buf`后，返回新的`buf`
 func (q QuotedValue) Serialize(buf []byte) []byte {
 	buf = append(buf, '"')
-	buf = append(buf, []byte(q)...)
+	buf = append(buf, q...)
 	return append(buf, '"')
 }
 
@@ -33,7 +34,7 @@ type UnquotedValue string
 
 // Serialize 将`u`序列化为字符串，追加到`buf`后，返回新的`buf`
 func (u UnquotedValue) Serialize(buf []byte) []byte {
-	return append(buf, []byte(u)...)
+	return append(buf, u...)
 }
 
 // Size 返回`u`在最终的`json`串中占有多少字节
@@ -205,7 +206,7 @@ func (m Map) Serialize(buf []byte) []byte {
 	count := len(m.keys)
 	for i, key := range m.keys {
 		buf = append(buf, '"')
-		buf = append(buf, []byte(key)...)
+		buf = append(buf, key...)
 		buf = append(buf, '"')
 		buf = append(buf, ':')
 		buf = m.values[i].Serialize(buf)
@@ -343,7 +344,9 @@ func NewMap() *Map {
 }
 
 func escapeString(s string) string {
-	var buf bytes.Buffer
+	buf := internal.Get()
+	defer internal.Put(buf)
+
 	for _, r := range s {
 		if r == '\\' || r == '"' {
 			buf.WriteByte('\\')
