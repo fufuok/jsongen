@@ -5,9 +5,12 @@ import (
 	"testing"
 )
 
-func BenchmarkStandardJson(b *testing.B) {
+func BenchmarkGenJsonStandard(b *testing.B) {
 	b.StopTimer()
 	m := make(map[string]interface{})
+
+	var raw map[string]interface{}
+	_ = json.Unmarshal([]byte(jsStr), &raw)
 
 	m1 := make(map[string]interface{})
 	m1["uintkey"] = 123
@@ -17,6 +20,10 @@ func BenchmarkStandardJson(b *testing.B) {
 	m1["stringkey1"] = "teststring"
 	m1["stringkey2"] = `string with \`
 	m1["stringkey3"] = `string with "`
+	m1["raw_string"] = raw
+	m1["raw_bytes"] = raw
+	m1["raw_sarr"] = []map[string]interface{}{raw, raw}
+	m1["raw_barr"] = []map[string]interface{}{raw, raw}
 	m["map1"] = m1
 
 	m2 := make(map[string]interface{})
@@ -82,7 +89,7 @@ func BenchmarkStandardJson(b *testing.B) {
 	}
 }
 
-func BenchmarkGen(b *testing.B) {
+func BenchmarkGenJson(b *testing.B) {
 	b.StopTimer()
 	m, _ := map4()
 	b.ReportAllocs()
@@ -92,3 +99,13 @@ func BenchmarkGen(b *testing.B) {
 		m.Serialize(nil)
 	}
 }
+
+// go test -run=^$ -benchmem -count=2 -bench=^BenchmarkGenJson
+// goos: linux
+// goarch: amd64
+// pkg: github.com/fufuok/jsongen
+// cpu: Intel(R) Xeon(R) Gold 6151 CPU @ 3.00GHz
+// BenchmarkGenJsonStandard-4         40786             29439 ns/op           10257 B/op        195 allocs/op
+// BenchmarkGenJsonStandard-4         40789             29188 ns/op           10257 B/op        195 allocs/op
+// BenchmarkGenJson-4                588708              2026 ns/op            1792 B/op          1 allocs/op
+// BenchmarkGenJson-4                585769              2026 ns/op            1792 B/op          1 allocs/op
