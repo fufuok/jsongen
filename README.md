@@ -8,12 +8,10 @@
 
 ## 改动
 
-- 增加使用 `buffer_pool`
 - 增加添加原始 JSON 数据方法: `RawString` `RawBytes`
   - map: `m.PutRawString` `m.PutRawBytes` `m.PutRawStringArray` `m.PutRawBytesArray`
   - array: `a.AppendRawString` `a.AppendRawBytes` `a.AppendRawStringArray` `a.AppendRawBytesArray`
 - 减少一些不必要的转换
-- 增加 `go mod`
 
 ## 使用
 
@@ -43,7 +41,7 @@ func main() {
 	size := js.Size()
 	bs := bytespool.Get(size)
 	defer bytespool.Put(bs)
-	data := js.Serialize(bs)
+	data := js.Serialize(bs[:0])
 
 	// 也可以直接使用 nil
 	// data := js.Serialize(nil)

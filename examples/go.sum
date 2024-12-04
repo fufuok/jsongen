@@ -1,0 +1,4 @@
+github.com/fufuok/bytespool v1.4.0 h1:1Fb4tcKGx1G5hdOxBVYffbEEYasTail70cJLBTlqcek=
+github.com/fufuok/bytespool v1.4.0/go.mod h1:IRJcvpAomyo8gWmK7ucZ59p+aHHYiece9B+7EaKz53I=
+github.com/fufuok/jsongen v0.2.0 h1:hjgFJqVylp9NyIPkAmu7OWNOq0QvvsNAz4DDTGs56dk=
+github.com/fufuok/jsongen v0.2.0/go.mod h1:/Rjyh9UuiR8IRXcwEa8LtVyjMxSzpz4thn0cL2xo/mg=
